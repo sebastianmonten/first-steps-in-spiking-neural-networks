@@ -1,1 +1,2 @@
-# first-steps-in-spiking-neural-networks
+# First steps in spiking neural networks tutorial
+Following the [tutorial](https://medium.com/@tapwi93/first-steps-in-spiking-neural-networks-da3c82f538ad) by Andrey Urusov with the goal of understanding the SNN implementation and investigating ways to implement it with the TinyML framework. 
