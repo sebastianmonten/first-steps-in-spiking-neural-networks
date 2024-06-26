@@ -19,8 +19,9 @@ URL = 'datasets/Iris.csv'
 df = pd.read_csv(URL) # pandas.core.frame.DataFrame
 df = df.iloc[:,1:]
 
-# Print the first few line sof the dataset
+# Print the first few lines of the dataset
 print(df.head())
+
 
 # Make a copy of the dataframe, delete the ‘species’ column, leaving only the quantitative part of the detaset
 df_ = df.drop(columns=['Species']).copy()
@@ -63,7 +64,7 @@ def Gaus_neuron(df , n : int, step: float, s: List[float]) -> Tuple[List[int], L
 
     for col in df.columns:
 
-        vol = df[col].values # numpy.ndarray
+        vol = df[col].values # numpy.ndarray of all the values in the column
         min_ = np.min(vol)
         max_ = np.max(vol)
         x_axis = np.arange(min_, max_, step) # numpy.ndarray {min_, min_ + step, min_ + 2*step, ... , max_ - step}
@@ -74,9 +75,9 @@ def Gaus_neuron(df , n : int, step: float, s: List[float]) -> Tuple[List[int], L
 
         for i in range(n):
 
-            loc = (max_ - min_) * (i /(n-1)) + min_
-            neurons[i] = norm.pdf(x_axis, loc, s[t])
-            neurons[i] = neurons[i] / np.max(neurons[i])
+            loc = (max_ - min_) * (i /(n-1)) + min_ # loc is the ith element in [min_, min_+1*range_len/(n-1), ...,  min_+(n-2)*range_len/(n-1), max_]
+            neurons[i] = norm.pdf(x_axis, loc, s[t]) # neurons[i] = [f_X(x_axis[0]), f_X(x_axis[1]), ...] , X ∈ N(loc, s[i])
+            neurons[i] = neurons[i] / np.max(neurons[i]) # scale neurons[i] so that max value is 1
 
         neurons_list.append(neurons)
         t += 1
@@ -102,7 +103,7 @@ for ax in [ax1, ax2, ax3, ax4]:
     ax.set(ylabel = f'{df_.columns[k]} \n\n Excitation of Neuron')
 
     for i in range(len(d[0][k])):
-
+        # i = 0, 1, ..., 9
         ax.plot(d[1][k], d[0][k][i], label = i + 1)
 
     k+=1
@@ -195,10 +196,11 @@ plt.show()
 def Lat_Spike(df, d, n):
 
     for i in range(len(df.columns)):
+        # i = 0, 1, 2, 3
 
-        k = len(df.iloc[:, i])
-        st1 = np.tile(d[1][i], (k, 1))
-        st2 = df.iloc[:, i].values.reshape(-1, 1)
+        k = len(df.iloc[:, i]) # len of each column, 150
+        st1 = np.tile(d[1][i], (k, 1)) # st1 is an array of the x_axis for column i, repeated 150 times
+        st2 = df.iloc[:, i].values.reshape(-1, 1) # st2 is the ith column reshaped into a 2D array with one column and as many rows as needed.
         ind = (st1 == st2)
         exc = np.tile(d[0][i], (k, 1)).reshape(k, n, len(d[0][i][0]))[
             np.repeat(ind, n, axis=0).reshape(k, n, len(ind[0]))].reshape(k, n)
